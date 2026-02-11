@@ -1,0 +1,1402 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>MrxH Web</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --primary: #3b82f6;
+      --primary-hover: #2563eb;
+      --secondary: #facc15;
+      --secondary-hover: #eab308;
+      --danger: #ef4444;
+      --danger-hover: #dc2626;
+      --bg-dark: #0f172a;
+      --bg-card-dark: #1e293b;
+      --bg-header-dark: #0b1220;
+      --text-dark: #e6eef8;
+      --text-muted-dark: #94a3b8;
+      --border-dark: rgba(255,255,255,.08);
+      
+      --bg-light: #f8fafc;
+      --bg-card-light: #fff;
+      --bg-header-light: #e2e8f0;
+      --text-light: #0f172a;
+      --text-muted-light: #475569;
+      --border-light: #cbd5e1;
+      
+      --transition: all 0.3s ease;
+      --radius: 12px;
+      --shadow: 0 4px 12px rgba(0,0,0,.1);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: var(--bg-dark);
+      color: var(--text-dark);
+      margin: 0;
+      padding: 0;
+      transition: var(--transition);
+      line-height: 1.6;
+    }
+
+    /* Maintenance Banner - Updated */
+    #maintenanceBanner {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.95);
+      color: #fff;
+      z-index: 2000;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      padding: 20px;
+    }
+    
+    #maintenanceBanner.active {
+      display: flex;
+      animation: fadeIn 0.5s ease;
+    }
+    
+    .maintenance-content {
+      background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+      padding: 30px;
+      border-radius: var(--radius);
+      max-width: 600px;
+      width: 100%;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    }
+    
+    .maintenance-icon {
+      font-size: 48px;
+      margin-bottom: 20px;
+      animation: pulse 2s infinite;
+    }
+    
+    .maintenance-text h2 {
+      margin: 0 0 15px;
+      font-size: 28px;
+    }
+    
+    #maintenanceMessage {
+      font-size: 16px;
+      line-height: 1.6;
+    }
+    
+    #maintenanceMessage ul {
+      padding-left: 20px;
+      margin-top: 15px;
+      text-align: left;
+    }
+    
+    #maintenanceMessage li {
+      margin-bottom: 8px;
+    }
+
+    /* Header Styles */
+    header {
+      background: linear-gradient(135deg, var(--bg-header-dark) 0%, #1a243f 100%);
+      padding: 18px;
+      text-align: center;
+      border-bottom: 1px solid var(--border-dark);
+      position: relative;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+    }
+    
+    header h1 {
+      margin: 0;
+      font-size: 22px;
+      font-weight: 700;
+      background: linear-gradient(90deg, #3b82f6, #60a5fa);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      display: inline-block;
+    }
+
+    /* Toggle Mode */
+    #modeToggle {
+      position: absolute;
+      right: 16px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: rgba(255,255,255,0.1);
+      color: #fff;
+      border: none;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: var(--transition);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      backdrop-filter: blur(10px);
+    }
+    
+    #modeToggle:hover {
+      background: rgba(255,255,255,0.2);
+      transform: translateY(-50%) scale(1.05);
+    }
+
+    /* Container and Search */
+    .container {
+      max-width: 1200px;
+      margin: 20px auto;
+      padding: 0 16px;
+    }
+    
+    .search-container {
+      position: relative;
+      margin-bottom: 24px;
+      max-width: 500px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    
+    .search-box {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+    
+    .search-box i {
+      position: absolute;
+      left: 15px;
+      color: var(--text-muted-dark);
+      z-index: 2;
+    }
+    
+    .search-box input {
+      width: 100%;
+      padding: 14px 14px 14px 45px;
+      border-radius: 50px;
+      border: 1px solid var(--border-dark);
+      background: var(--bg-card-dark);
+      color: var(--text-dark);
+      font-size: 16px;
+      transition: var(--transition);
+      box-shadow: var(--shadow);
+    }
+    
+    .search-box input:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3);
+    }
+    
+    .search-suggestions {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;
+      background: var(--bg-card-dark);
+      border-radius: 0 0 var(--radius) var(--radius);
+      box-shadow: var(--shadow);
+      max-height: 200px;
+      overflow-y: auto;
+      z-index: 1000;
+      display: none;
+    }
+    
+    .search-suggestions.active {
+      display: block;
+      animation: slideDown 0.2s ease;
+    }
+    
+    .suggestion-item {
+      padding: 12px 20px;
+      cursor: pointer;
+      transition: var(--transition);
+      border-bottom: 1px solid var(--border-dark);
+    }
+    
+    .suggestion-item:hover {
+      background: rgba(255,255,255,0.05);
+    }
+    
+    .suggestion-item:last-child {
+      border-bottom: none;
+    }
+
+    /* Games Grid - Improved Responsiveness */
+    .wrap {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 24px;
+    }
+    
+    .card {
+      background: var(--bg-card-dark);
+      border-radius: var(--radius);
+      overflow: hidden;
+      box-shadow: var(--shadow);
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      transition: var(--transition);
+      transform: translateY(0);
+      height: 100%;
+    }
+    
+    .card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+    }
+    
+    .card-img-container {
+      position: relative;
+      width: 100%;
+      height: 180px;
+      overflow: hidden;
+    }
+    
+    .card img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.5s ease;
+    }
+    
+    .card:hover img {
+      transform: scale(1.05);
+    }
+    
+    .card-body {
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+    }
+    
+    .card-body h3 {
+      margin: 0 0 12px;
+      font-size: 18px;
+      color: var(--text-dark);
+      line-height: 1.3;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+    
+    .meta {
+      font-size: 14px;
+      color: var(--text-muted-dark);
+      margin-bottom: 12px;
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    
+    .desc {
+      flex: 1;
+      font-size: 14px;
+      color: var(--text-muted-dark);
+      margin-bottom: 16px;
+      overflow: hidden;
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      line-height: 1.5;
+    }
+    
+    .tags {
+      margin: 12px 0;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+    
+    .tag {
+      background: rgba(255,255,255,0.1);
+      color: var(--text-dark);
+      padding: 5px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+    }
+    
+    .actions {
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: auto;
+    }
+    
+    .actions a {
+      display: block;
+      background: var(--primary);
+      color: #fff;
+      padding: 12px;
+      border-radius: 8px;
+      font-weight: 600;
+      text-decoration: none;
+      transition: var(--transition);
+    }
+    
+    .actions a:hover {
+      background: var(--primary-hover);
+    }
+    
+    .download-count {
+      font-size: 13px;
+      color: var(--text-muted-dark);
+      text-align: center;
+    }
+    
+    .badge-update {
+      position: absolute;
+      top: 12px;
+      left: 12px;
+      background: var(--secondary);
+      color: #0f172a;
+      font-size: 12px;
+      font-weight: 700;
+      padding: 5px 12px;
+      border-radius: 20px;
+      box-shadow: 0 2px 6px rgba(0,0,0,.4);
+      z-index: 2;
+    }
+    
+    .mod-btn {
+      background: var(--secondary);
+      color: #0f172a;
+      font-size: 14px;
+      font-weight: 600;
+      border: none;
+      border-radius: 8px;
+      padding: 10px;
+      cursor: pointer;
+      transition: var(--transition);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+    
+    .mod-btn:hover {
+      background: var(--secondary-hover);
+    }
+
+    /* Loading Spinner */
+    .loader {
+      display: none;
+      text-align: center;
+      padding: 40px;
+    }
+    
+    .spinner {
+      width: 40px;
+      height: 40px;
+      border: 4px solid rgba(255, 255, 255, 0.1);
+      border-radius: 50%;
+      border-top: 4px solid var(--primary);
+      animation: spin 1s linear infinite;
+      margin: 0 auto;
+    }
+    
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    /* Modal popup Mod Features */
+    #modPopup {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.85);
+      z-index: 4000;
+      justify-content: center;
+      align-items: center;
+      padding: 16px;
+      box-sizing: border-box;
+      overflow-y: auto;
+      animation: fadeIn 0.3s ease;
+    }
+    
+    #modPopup.active {
+      display: flex;
+    }
+    
+    #modPopup .box {
+      background: var(--bg-card-dark);
+      padding: 24px;
+      border-radius: var(--radius);
+      max-width: 500px;
+      width: 100%;
+      max-height: 90vh;
+      overflow-y: auto;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+      position: relative;
+      animation: scaleIn 0.3s ease;
+    }
+    
+    #modPopup h3 {
+      margin-top: 0;
+      color: var(--secondary);
+      font-size: 20px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--border-dark);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    #modContent {
+      white-space: pre-line;
+      color: var(--text-dark);
+      line-height: 1.6;
+      padding: 16px 0;
+      max-height: 60vh;
+      overflow-y: auto;
+    }
+    
+    #modContent ul, #modContent ol {
+      padding-left: 20px;
+      margin: 10px 0;
+    }
+    
+    #modContent li {
+      margin-bottom: 8px;
+    }
+    
+    #closeMod {
+      background: var(--danger);
+      color: #fff;
+      padding: 12px 20px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+      width: 100%;
+      margin-top: 16px;
+      font-size: 16px;
+      transition: var(--transition);
+    }
+    
+    #closeMod:hover {
+      background: var(--danger-hover);
+    }
+
+    /* Footer */
+    footer {
+      background: var(--bg-header-dark);
+      color: var(--text-muted-dark);
+      padding: 24px;
+      text-align: center;
+      font-size: 14px;
+      border-top: 1px solid var(--border-dark);
+      margin-top: 40px;
+      transition: var(--transition);
+    }
+    
+    footer a {
+      color: var(--primary);
+      text-decoration: none;
+      margin: 0 8px;
+      transition: var(--transition);
+    }
+    
+    footer a:hover {
+      color: #60a5fa;
+      text-decoration: underline;
+    }
+    
+    .footer-links {
+      margin: 10px 0;
+    }
+
+    /* Animations */
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    
+    @keyframes scaleIn {
+      from { transform: scale(0.9); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+    
+    @keyframes slideDown {
+      from { transform: translateY(-20px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+    
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.1); }
+      100% { transform: scale(1); }
+    }
+
+    /* === Light Mode === */
+    body.light-mode {
+      background: var(--bg-light);
+      color: var(--text-light);
+    }
+    
+    body.light-mode header {
+      background: linear-gradient(135deg, var(--bg-header-light) 0%, #d1deef 100%);
+      color: var(--text-light);
+      border-bottom: 1px solid var(--border-light);
+    }
+    
+    body.light-mode #modeToggle {
+      background: rgba(0,0,0,0.05);
+      color: var(--text-light);
+    }
+    
+    body.light-mode #modeToggle:hover {
+      background: rgba(0,0,0,0.1);
+    }
+    
+    body.light-mode .search-box input {
+      background: #fff;
+      border: 1px solid var(--border-light);
+      color: var(--text-light);
+    }
+    
+    body.light-mode .search-suggestions {
+      background: #fff;
+      border: 1px solid var(--border-light);
+      border-top: none;
+    }
+    
+    body.light-mode .suggestion-item {
+      border-bottom: 1px solid var(--border-light);
+    }
+    
+    body.light-mode .suggestion-item:hover {
+      background: rgba(0,0,0,0.03);
+    }
+    
+    body.light-mode .card {
+      background: var(--bg-card-light);
+      color: var(--text-light);
+    }
+    
+    body.light-mode .card-body h3 {
+      color: var(--text-light);
+    }
+    
+    body.light-mode .meta {
+      color: var(--text-muted-light);
+    }
+    
+    body.light-mode .desc {
+      color: var(--text-muted-light);
+    }
+    
+    body.light-mode .tag {
+      background: rgba(0,0,0,0.05);
+      color: var(--text-light);
+    }
+    
+    body.light-mode .actions a {
+      background: var(--primary);
+      color: #fff;
+    }
+    
+    body.light-mode .actions a:hover {
+      background: var(--primary-hover);
+    }
+    
+    body.light-mode .download-count {
+      color: var(--text-muted-light);
+    }
+    
+    body.light-mode footer {
+      background: var(--bg-header-light);
+      color: var(--text-muted-light);
+      border-top: 1px solid var(--border-light);
+    }
+    
+    body.light-mode footer a {
+      color: var(--primary);
+    }
+    
+    body.light-mode #modPopup .box {
+      background: var(--bg-card-light);
+      box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+    }
+    
+    body.light-mode #modPopup h3 {
+      color: var(--text-light);
+      border-bottom: 1px solid var(--border-light);
+    }
+    
+    body.light-mode #modContent {
+      color: var(--text-light);
+    }
+    
+    body.light-mode .spinner {
+      border: 4px solid rgba(0, 0, 0, 0.1);
+      border-top: 4px solid var(--primary);
+    }
+
+    /* === Responsive Mobile === */
+    @media (max-width: 1024px) {
+      .wrap {
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        gap: 20px;
+      }
+      
+      .card-img-container {
+        height: 160px;
+      }
+    }
+
+    @media (max-width: 768px) {
+      header {
+        padding: 16px;
+      }
+      
+      header h1 {
+        font-size: 20px;
+      }
+      
+      #modeToggle {
+        width: 36px;
+        height: 36px;
+        font-size: 14px;
+      }
+      
+      /* Maintenance Banner Mobile */
+      .maintenance-content {
+        padding: 20px;
+        margin: 15px;
+      }
+      
+      .maintenance-icon {
+        font-size: 36px;
+        margin-bottom: 15px;
+      }
+      
+      .maintenance-text h2 {
+        font-size: 22px;
+      }
+      
+      #maintenanceMessage {
+        font-size: 14px;
+      }
+      
+      .container {
+        margin: 16px auto;
+        padding: 0 12px;
+      }
+      
+      .wrap {
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        gap: 16px;
+      }
+      
+      .card-img-container {
+        height: 150px;
+      }
+      
+      .card-body {
+        padding: 16px;
+      }
+      
+      .card-body h3 {
+        font-size: 16px;
+        margin-bottom: 8px;
+      }
+      
+      .meta {
+        font-size: 13px;
+        margin-bottom: 8px;
+        flex-direction: column;
+        gap: 4px;
+      }
+      
+      .desc {
+        font-size: 13px;
+        margin-bottom: 12px;
+        -webkit-line-clamp: 2;
+      }
+      
+      .tags {
+        gap: 4px;
+        margin: 8px 0;
+      }
+      
+      .tag {
+        font-size: 11px;
+        padding: 4px 10px;
+      }
+      
+      .actions a, .mod-btn {
+        font-size: 13px;
+        padding: 10px;
+      }
+      
+      .download-count {
+        font-size: 12px;
+      }
+      
+      .search-box input {
+        padding: 12px 12px 12px 40px;
+        font-size: 14px;
+      }
+      
+      .badge-update {
+        font-size: 11px;
+        padding: 4px 10px;
+      }
+      
+      /* Modal Responsive for Mobile */
+      #modPopup {
+        padding: 12px;
+        align-items: flex-start;
+        padding-top: 60px;
+      }
+      
+      #modPopup .box {
+        padding: 20px;
+        max-height: 80vh;
+        border-radius: 10px;
+      }
+      
+      #modPopup h3 {
+        font-size: 18px;
+        padding-bottom: 10px;
+      }
+      
+      #modContent {
+        font-size: 14px;
+        padding: 12px 0;
+        max-height: 55vh;
+      }
+      
+      #closeMod {
+        padding: 10px;
+        font-size: 15px;
+        margin-top: 12px;
+      }
+      
+      footer {
+        padding: 20px;
+        margin-top: 30px;
+      }
+    }
+
+    @media (max-width: 600px) {
+      .wrap {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 16px;
+      }
+      
+      .card {
+        flex-direction: column;
+        max-height: unset;
+      }
+      
+      .card-img-container {
+        width: 100%;
+        height: 140px;
+      }
+      
+      .card-body {
+        padding: 12px;
+      }
+      
+      .card-body h3 {
+        font-size: 15px;
+      }
+      
+      .meta {
+        font-size: 12px;
+      }
+      
+      .desc {
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+      }
+      
+      .tags {
+        display: flex;
+      }
+      
+      .actions {
+        gap: 8px;
+      }
+      
+      .actions a, .mod-btn {
+        padding: 8px;
+        font-size: 12px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .wrap {
+        grid-template-columns: 1fr;
+        gap: 16px;
+      }
+      
+      .card {
+        flex-direction: column;
+        max-height: unset;
+        height: auto;
+      }
+      
+      .card-img-container {
+        width: 100%;
+        height: 160px;
+        flex-shrink: 0;
+      }
+      
+      .card-body {
+        flex: 1;
+        padding: 12px;
+        overflow: visible;
+      }
+      
+      .card-body h3 {
+        white-space: normal;
+        overflow: visible;
+        text-overflow: clip;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+      }
+      
+      .desc {
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+      }
+      
+      .tags {
+        display: flex;
+        flex-wrap: wrap;
+      }
+      
+      .actions {
+        gap: 8px;
+      }
+      
+      .actions a, .mod-btn {
+        padding: 10px;
+        font-size: 14px;
+      }
+    }
+
+    @media (max-width: 360px) {
+      .card-img-container {
+        height: 140px;
+      }
+      
+      .card-body {
+        padding: 10px;
+      }
+      
+      .card-body h3 {
+        font-size: 15px;
+      }
+      
+      .meta {
+        font-size: 12px;
+      }
+      
+      .desc {
+        font-size: 13px;
+        -webkit-line-clamp: 2;
+      }
+      
+      .actions a, .mod-btn {
+        font-size: 13px;
+        padding: 9px;
+      }
+    }
+
+    /* No Results Message */
+    .no-results {
+      grid-column: 1 / -1;
+      text-align: center;
+      padding: 40px;
+      color: var(--text-muted-dark);
+    }
+    
+    .no-results i {
+      font-size: 40px;
+      margin-bottom: 10px;
+      opacity: 0.7;
+    }
+    
+    .no-results h3 {
+      margin-bottom: 10px;
+      font-size: 18px;
+    }
+    
+    body.light-mode .no-results {
+      color: var(--text-muted-light);
+    }
+  </style>
+</head>
+<body>
+  <!-- Maintenance Banner - Updated -->
+  <div id="maintenanceBanner">
+    <div class="maintenance-content">
+      <div class="maintenance-icon">
+        <i class="fas fa-tools"></i>
+      </div>
+      <div class="maintenance-text">
+        <h2>Maintenance</h2>
+        <div id="maintenanceMessage">The site is under maintenance. Please be patient.</div>
+      </div>
+    </div>
+  </div>
+
+  <header>
+    <h1>MrxH Mod Menu</h1>
+    <button id="modeToggle">🌙</button>
+  </header>
+
+  <div class="container">
+    <div class="search-container">
+      <div class="search-box">
+        <i class="fas fa-search"></i>
+        <input type="text" id="searchInput" placeholder="Search games...">
+      </div>
+      <div class="search-suggestions" id="searchSuggestions"></div>
+    </div>
+    
+    <div class="loader" id="loader">
+      <div class="spinner"></div>
+      <p>Loading games...</p>
+    </div>
+    
+    <div class="wrap" id="gamesList"></div>
+  </div>
+
+  <!-- Modal Mod Features -->
+  <div id="modPopup">
+    <div class="box">
+      <h3><i class="fas fa-star"></i> Mod Features</h3>
+      <div id="modContent"></div>
+      <button id="closeMod">Close</button>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    <p>&copy; 2025 MrxH Mod Menu. All rights reserved.</p>
+    <div class="footer-links">
+      <a href="request.html"><i class="fas fa-solid fa-pen-to-square"></i> Request Mod</a> | 
+      <a href="https://pastelink.net/8v8skpqf"><i class="fas fa-solid fa-hand-holding-dollar"></i> Donate Here</a>
+    </div>
+  </footer>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-app.js";
+    import { 
+      getFirestore, collection, onSnapshot, doc, updateDoc, increment, 
+      serverTimestamp, getDocs, query, orderBy 
+    } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyDtlGFE83AD8k1kr2n0merMKLBOKjtNpKg",
+      authDomain: "mrxhweb.firebaseapp.com",
+      projectId: "mrxhweb",
+      storageBucket: "mrxhweb.appspot.com",
+      messagingSenderId: "187207414554",
+      appId: "1:187207414554:web:9a38d6caaab5e4fab772a3",
+      measurementId: "G-6NNDEDV8TT"
+    };
+
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    // DOM Elements
+    const gamesList = document.getElementById("gamesList");
+    const searchInput = document.getElementById("searchInput");
+    const searchSuggestions = document.getElementById("searchSuggestions");
+    const maintenanceBanner = document.getElementById("maintenanceBanner");
+    const maintenanceMessage = document.getElementById("maintenanceMessage");
+    const modPopup = document.getElementById("modPopup");
+    const modContent = document.getElementById("modContent");
+    const closeMod = document.getElementById("closeMod");
+    const modeToggle = document.getElementById("modeToggle");
+    const loader = document.getElementById("loader");
+
+    // Global Variables
+    let allGames = [];
+    let searchTimeout = null;
+
+    // Utility Functions
+    function formatCount(num) {
+      if (!num || num === 0) return "0";
+      if (num >= 1e9) return (num / 1e9).toFixed(1).replace(/\.0$/, "") + "B";
+      if (num >= 1e6) return (num / 1e6).toFixed(1).replace(/\.0$/, "") + "M";
+      if (num >= 1e3) return (num / 1e3).toFixed(1).replace(/\.0$/, "") + "k";
+      return num.toString();
+    }
+
+    function showLoader() {
+      if (loader) loader.style.display = 'block';
+      if (gamesList) gamesList.innerHTML = '';
+    }
+
+    function hideLoader() {
+      if (loader) loader.style.display = 'none';
+    }
+
+    function escapeHtml(unsafe) {
+      return unsafe
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+    }
+
+    // Theme Management
+    function initTheme() {
+      const savedTheme = localStorage.getItem("theme");
+      if (savedTheme === "light") {
+        document.body.classList.add("light-mode");
+        if (modeToggle) modeToggle.textContent = "☀️";
+      }
+      
+      if (modeToggle) {
+        modeToggle.addEventListener("click", () => {
+          document.body.classList.toggle("light-mode");
+          if (document.body.classList.contains("light-mode")) {
+            localStorage.setItem("theme", "light");
+            modeToggle.textContent = "☀️";
+          } else {
+            localStorage.setItem("theme", "dark");
+            modeToggle.textContent = "🌙";
+          }
+        });
+      }
+    }
+
+    // Maintenance System
+    function initMaintenance() {
+      const maintenanceRef = doc(db, "settings", "maintenance");
+      
+      onSnapshot(maintenanceRef, (snap) => {
+        if (snap.exists()) {
+          const data = snap.data();
+          if (data.status === "on") {
+            if (maintenanceBanner) {
+              maintenanceBanner.classList.add("active");
+              document.body.style.overflow = "hidden";
+              
+              if (Array.isArray(data.messages) && data.messages.length > 0) {
+                maintenanceMessage.innerHTML = "<ul>" + 
+                  data.messages.map(m => `<li>${escapeHtml(m)}</li>`).join("") + 
+                  "</ul>";
+              } else {
+                maintenanceMessage.textContent = data.message || "The site is under maintenance. Please be patient.";
+              }
+            }
+          } else {
+            if (maintenanceBanner) {
+              maintenanceBanner.classList.remove("active");
+              document.body.style.overflow = "auto";
+            }
+          }
+        }
+      }, (error) => {
+        console.error("Maintenance listener error:", error);
+      });
+    }
+
+    // Games Management
+    function initGames() {
+      showLoader();
+      
+      const gamesRef = collection(db, "games");
+      const gamesQuery = query(gamesRef, orderBy("updatedAt", "desc"));
+      
+      onSnapshot(gamesQuery, (snapshot) => {
+        allGames = [];
+        snapshot.forEach(docSnap => {
+          const gameData = docSnap.data();
+          gameData.id = docSnap.id;
+          allGames.push(gameData);
+        });
+        
+        hideLoader();
+        renderGames();
+        updateSearchSuggestions('');
+      }, (error) => {
+        console.error("Games listener error:", error);
+        hideLoader();
+        showErrorState();
+      });
+    }
+
+    function showErrorState() {
+      if (gamesList) {
+        gamesList.innerHTML = `<div class="no-results">
+          <i class="fas fa-exclamation-triangle"></i>
+          <h3>Error Loading Games</h3>
+          <p>Please check your connection and refresh the page</p>
+        </div>`;
+      }
+    }
+
+    function renderGames() {
+      if (!gamesList) return;
+      
+      const searchTerm = searchInput ? searchInput.value.toLowerCase() : '';
+      const filteredGames = allGames.filter(game => {
+        const searchText = `${game.title || ''} ${game.description || ''} ${Array.isArray(game.tags) ? game.tags.join(' ') : ''}`.toLowerCase();
+        return searchText.includes(searchTerm);
+      });
+
+      if (filteredGames.length === 0) {
+        gamesList.innerHTML = `<div class="no-results">
+          <i class="fas fa-search"></i>
+          <h3>No games found</h3>
+          <p>Try different keywords or check your search spelling</p>
+        </div>`;
+        return;
+      }
+
+      const now = Date.now();
+      const sevenDays = 7 * 24 * 60 * 60 * 1000;
+      
+      gamesList.innerHTML = filteredGames.map(game => {
+        const isUpdated = checkIfUpdated(game, now, sevenDays);
+        const safeTitle = escapeHtml(game.title || 'Untitled Game');
+        const safeDescription = escapeHtml(game.description || '');
+        const safeModFeature = escapeHtml(game.modFeature || '');
+        
+        return `
+          <div class="card">
+            ${isUpdated ? '<div class="badge-update"><i class="fas fa-bolt"></i> UPDATE</div>' : ''}
+            <div class="card-img-container">
+              <img src="${game.coverUrl || 'https://via.placeholder.com/400x200?text=No+Image'}" 
+                   alt="${safeTitle}" 
+                   loading="lazy"
+                   onerror="this.src='https://via.placeholder.com/400x200?text=No+Image'">
+            </div>
+            <div class="card-body">
+              <h3>${safeTitle}</h3>
+              <div class="meta">
+                <span>Version: ${game.version || '-'}</span>
+                <span>${game.size || '-'}</span>
+              </div>
+              <p class="desc">${safeDescription}</p>
+              <div class="tags">
+                ${Array.isArray(game.tags) ? game.tags.map(tag => 
+                  `<span class="tag">${escapeHtml(tag)}</span>`
+                ).join('') : ''}
+              </div>
+              <div class="actions">
+                <a href="${game.apkUrl || '#'}" 
+                   target="_blank" 
+                   class="download-btn" 
+                   data-id="${game.id}"
+                   ${!game.apkUrl ? 'style="opacity:0.5;pointer-events:none;"' : ''}>
+                  <i class="fas fa-download"></i> 
+                  ${game.apkUrl ? 'Download' : 'Coming Soon'}
+                </a>
+                <p class="download-count">Downloads: ${formatCount(game.downloadCount || 0)}</p>
+                ${game.modFeature ? `
+                  <button class="mod-btn" data-mod="${safeModFeature}">
+                    <i class="fas fa-crown"></i> View Mod Features
+                  </button>
+                ` : ''}
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function checkIfUpdated(game, now, sevenDays) {
+      if (!game.updatedAt || !game.createdAt) return false;
+      
+      try {
+        const updatedTime = game.updatedAt.toMillis ? game.updatedAt.toMillis() : new Date(game.updatedAt).getTime();
+        const createdTime = game.createdAt.toMillis ? game.createdAt.toMillis() : new Date(game.createdAt).getTime();
+        
+        return updatedTime > createdTime && (now - updatedTime) <= sevenDays;
+      } catch (error) {
+        console.error('Error checking update status:', error);
+        return false;
+      }
+    }
+
+    // Search Functionality
+    function initSearch() {
+      if (!searchInput) return;
+      
+      searchInput.addEventListener("input", () => {
+        clearTimeout(searchTimeout);
+        searchTimeout = setTimeout(() => {
+          renderGames();
+        }, 300);
+        
+        updateSearchSuggestions(searchInput.value);
+      });
+
+      // Close suggestions when clicking outside
+      document.addEventListener('click', (e) => {
+        if (searchSuggestions && 
+            !searchInput.contains(e.target) && 
+            !searchSuggestions.contains(e.target)) {
+          searchSuggestions.classList.remove('active');
+        }
+      });
+    }
+
+    function updateSearchSuggestions(query) {
+      if (!searchSuggestions || !query.trim()) {
+        if (searchSuggestions) searchSuggestions.classList.remove('active');
+        return;
+      }
+      
+      const filtered = allGames.filter(game => 
+        game.title && game.title.toLowerCase().includes(query.toLowerCase())
+      ).slice(0, 5);
+      
+      if (filtered.length === 0) {
+        searchSuggestions.classList.remove('active');
+        return;
+      }
+      
+      searchSuggestions.innerHTML = filtered.map(game => 
+        `<div class="suggestion-item" data-title="${escapeHtml(game.title)}">
+           <i class="fas fa-gamepad"></i> ${escapeHtml(game.title)}
+         </div>`
+      ).join('');
+      
+      searchSuggestions.classList.add('active');
+      
+      // Add click event to suggestions
+      document.querySelectorAll('.suggestion-item').forEach(item => {
+        item.addEventListener('click', () => {
+          if (searchInput) {
+            searchInput.value = item.dataset.title;
+            searchSuggestions.classList.remove('active');
+            renderGames();
+          }
+        });
+      });
+    }
+
+    // Download Tracking
+    function initDownloadTracking() {
+      if (!gamesList) return;
+      
+      gamesList.addEventListener("click", async (e) => {
+        const downloadBtn = e.target.closest(".download-btn");
+        if (downloadBtn && downloadBtn.dataset.id) {
+          e.preventDefault();
+          
+          const gameId = downloadBtn.dataset.id;
+          const game = allGames.find(g => g.id === gameId);
+          
+          if (game && game.apkUrl) {
+            // Track download
+            try {
+              const gameRef = doc(db, "games", gameId);
+              await updateDoc(gameRef, {
+                downloadCount: increment(1),
+                lastDownloaded: serverTimestamp()
+              });
+              
+              // Open download link after tracking
+              window.open(game.apkUrl, '_blank');
+            } catch (error) {
+              console.error('Download tracking error:', error);
+              // Still open the link even if tracking fails
+              window.open(game.apkUrl, '_blank');
+            }
+          }
+        }
+        
+        // Mod features popup
+        const modBtn = e.target.closest(".mod-btn");
+        if (modBtn && modBtn.dataset.mod) {
+          if (modContent) {
+            modContent.innerHTML = modBtn.dataset.mod;
+          }
+          if (modPopup) {
+            modPopup.classList.add("active");
+            document.body.style.overflow = "hidden";
+          }
+        }
+      });
+    }
+
+    // Modal Management
+    function initModal() {
+      if (closeMod) {
+        closeMod.addEventListener("click", () => {
+          if (modPopup) {
+            modPopup.classList.remove("active");
+            document.body.style.overflow = "auto";
+          }
+        });
+      }
+      
+      if (modPopup) {
+        modPopup.addEventListener("click", (e) => {
+          if (e.target === modPopup) {
+            modPopup.classList.remove("active");
+            document.body.style.overflow = "auto";
+          }
+        });
+      }
+    }
+
+    // Image Error Handling
+    function initImageErrorHandling() {
+      document.addEventListener('error', function(e) {
+        if (e.target.tagName === 'IMG') {
+          e.target.src = 'https://via.placeholder.com/400x200?text=No+Image';
+        }
+      }, true);
+    }
+
+    // Initialize Everything
+    document.addEventListener('DOMContentLoaded', function() {
+      initTheme();
+      initMaintenance();
+      initGames();
+      initSearch();
+      initDownloadTracking();
+      initModal();
+      initImageErrorHandling();
+    });
+
+    // Error boundary for the entire script
+    window.addEventListener('error', function(e) {
+      console.error('Global error:', e.error);
+    });
+
+  </script>
+    <script type='text/javascript' src='//flimsyprivilegehaunted.com/07/f4/89/07f489b15159a6d5531feeb092a78233.js'></script>
+    <script
+  type="text/javascript"
+  src="https://flimsyprivilegehaunted.com/0a/20/f7/0a20f772c61727acc40aae0725fdb768.js"
+></script>
+</body>
+</html>
